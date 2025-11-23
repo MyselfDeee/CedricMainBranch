@@ -19,15 +19,15 @@ import {
 } from '@/components/ui/pagination';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { housePlans } from '@/data/housePlans';
+import { builtHomes } from '@/data/builtHomes';
 import { FilterState, SortOption, HousePlan } from '@/types/housePlan';
 import { cn } from '@/lib/utils';
 import { ImageGallery } from '@/components/ImageGallery';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import Header from '@/components/Header';
 
-// HousePlanCard Component
-function HousePlanCard({ plan }: { plan: HousePlan }) {
+// BuiltHomeCard Component
+function BuiltHomeCard({ plan }: { plan: HousePlan }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -53,11 +53,9 @@ function HousePlanCard({ plan }: { plan: HousePlan }) {
           </div>
           
           <div className="absolute top-3 left-3 flex gap-2">
-            {plan.isNew && (
-              <Badge className="bg-accent text-accent-foreground">New</Badge>
-            )}
+            <Badge className="bg-green-600 text-white">Completed</Badge>
             {plan.isPopular && (
-              <Badge className="bg-accent text-accent-foreground">Popular</Badge>
+              <Badge className="bg-accent text-accent-foreground">Featured</Badge>
             )}
           </div>
 
@@ -163,11 +161,11 @@ function HousePlanCard({ plan }: { plan: HousePlan }) {
 
       {showVideo && plan.videoUrl && (
         <div 
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black z-50 flex items-center justify-center"
           onClick={() => setShowVideo(false)}
         >
           <div 
-            className="bg-black rounded-lg overflow-hidden max-w-4xl w-full aspect-video"
+            className="w-full h-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <iframe
@@ -182,7 +180,7 @@ function HousePlanCard({ plan }: { plan: HousePlan }) {
           </div>
           <button
             onClick={() => setShowVideo(false)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50"
           >
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -194,17 +192,17 @@ function HousePlanCard({ plan }: { plan: HousePlan }) {
   );
 }
 
-// Main HousePlans Page Component
-export const HousePlans = () => {
+// Main BuiltHomes Page Component
+export const BuiltHomes = () => {
   const [filters, setFilters] = useState<FilterState>({});
   const [sortBy, setSortBy] = useState<SortOption>('floor-area');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const itemsPerPage = 6;
 
-  // Filter and sort house plans
+  // Filter and sort built homes
   const filteredAndSortedPlans = useMemo(() => {
-    let filtered = [...housePlans];
+    let filtered = [...builtHomes];
 
     // Apply filters
     if (filters.priceMin) {
@@ -282,152 +280,152 @@ export const HousePlans = () => {
       <Header />
       <div className="min-h-screen bg-background">
         <div className="flex">
-        {/* Filter Sidebar */}
-        <FilterSidebar onFilterChange={setFilters} onClearAll={handleClearFilters} />
+          {/* Filter Sidebar */}
+          <FilterSidebar onFilterChange={setFilters} onClearAll={handleClearFilters} />
 
-        {/* Main Content */}
-        <div className="flex-1">
-          {/* Header */}
-          <div className="border-b bg-background sticky top-0 z-10">
-            <div className="px-8 py-6">
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-3xl font-bold text-foreground">
-                  House Plans Catalog
-                </h1>
-                <div className="flex items-center gap-3">
-                  {/* Sort Dropdown */}
-                  <Select
-                    value={sortBy}
-                    onValueChange={(value) => setSortBy(value as SortOption)}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="floor-area">Floor Area</SelectItem>
-                      <SelectItem value="newest">Newest</SelectItem>
-                      <SelectItem value="price-high">Price High → Low</SelectItem>
-                      <SelectItem value="price-low">Price Low → High</SelectItem>
-                      <SelectItem value="popular">Most Popular</SelectItem>
-                    </SelectContent>
-                  </Select>
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Header */}
+            <div className="border-b bg-background sticky top-0 z-10">
+              <div className="px-8 py-6">
+                <div className="flex items-center justify-between mb-2">
+                  <h1 className="text-3xl font-bold text-foreground">
+                    Built Homes Showcase
+                  </h1>
+                  <div className="flex items-center gap-3">
+                    {/* Sort Dropdown */}
+                    <Select
+                      value={sortBy}
+                      onValueChange={(value) => setSortBy(value as SortOption)}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="floor-area">Floor Area</SelectItem>
+                        <SelectItem value="newest">Newest</SelectItem>
+                        <SelectItem value="price-high">Price High → Low</SelectItem>
+                        <SelectItem value="price-low">Price Low → High</SelectItem>
+                        <SelectItem value="popular">Most Popular</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-                  {/* View Toggle */}
-                  <div className="flex gap-1 border rounded-md p-1">
-                    <Button
-                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                      size="icon"
-                      onClick={() => setViewMode('grid')}
-                      className="h-8 w-8"
-                    >
-                      <Grid3x3 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={viewMode === 'list' ? 'default' : 'ghost'}
-                      size="icon"
-                      onClick={() => setViewMode('list')}
-                      className="h-8 w-8"
-                    >
-                      <List className="h-4 w-4" />
-                    </Button>
+                    {/* View Toggle */}
+                    <div className="flex gap-1 border rounded-md p-1">
+                      <Button
+                        variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                        size="icon"
+                        onClick={() => setViewMode('grid')}
+                        className="h-8 w-8"
+                      >
+                        <Grid3x3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant={viewMode === 'list' ? 'default' : 'ghost'}
+                        size="icon"
+                        onClick={() => setViewMode('list')}
+                        className="h-8 w-8"
+                      >
+                        <List className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+                <p className="text-muted-foreground">
+                  Showing {filteredAndSortedPlans.length} results
+                </p>
               </div>
-              <p className="text-muted-foreground">
-                Showing {filteredAndSortedPlans.length} results
-              </p>
-            </div>
-          </div>
-
-          {/* House Plans Grid */}
-          <div className="p-8">
-            <div
-              className={
-                viewMode === 'grid'
-                  ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
-                  : 'space-y-4'
-              }
-            >
-              {paginatedPlans.map((plan) => (
-                <HousePlanCard key={plan.id} plan={plan} />
-              ))}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-12 flex justify-center">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                        className={
-                          currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                        }
-                      />
-                    </PaginationItem>
+            {/* Built Homes Grid */}
+            <div className="p-8">
+              <div
+                className={
+                  viewMode === 'grid'
+                    ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
+                    : 'space-y-4'
+                }
+              >
+                {paginatedPlans.map((plan) => (
+                  <BuiltHomeCard key={plan.id} plan={plan} />
+                ))}
+              </div>
 
-                    {[...Array(Math.min(totalPages, 3))].map((_, i) => {
-                      const pageNum = i + 1;
-                      return (
-                        <PaginationItem key={pageNum}>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-12 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          className={
+                            currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                          }
+                        />
+                      </PaginationItem>
+
+                      {[...Array(Math.min(totalPages, 3))].map((_, i) => {
+                        const pageNum = i + 1;
+                        return (
+                          <PaginationItem key={pageNum}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(pageNum)}
+                              isActive={currentPage === pageNum}
+                              className="cursor-pointer"
+                            >
+                              {pageNum}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      })}
+
+                      {totalPages > 4 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+
+                      {totalPages > 3 && (
+                        <PaginationItem>
                           <PaginationLink
-                            onClick={() => setCurrentPage(pageNum)}
-                            isActive={currentPage === pageNum}
+                            onClick={() => setCurrentPage(totalPages)}
+                            isActive={currentPage === totalPages}
                             className="cursor-pointer"
                           >
-                            {pageNum}
+                            {totalPages}
                           </PaginationLink>
                         </PaginationItem>
-                      );
-                    })}
+                      )}
 
-                    {totalPages > 4 && (
                       <PaginationItem>
-                        <PaginationEllipsis />
+                        <PaginationNext
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          className={
+                            currentPage === totalPages
+                              ? 'pointer-events-none opacity-50'
+                              : 'cursor-pointer'
+                          }
+                        />
                       </PaginationItem>
-                    )}
-
-                    {totalPages > 3 && (
-                      <PaginationItem>
-                        <PaginationLink
-                          onClick={() => setCurrentPage(totalPages)}
-                          isActive={currentPage === totalPages}
-                          className="cursor-pointer"
-                        >
-                          {totalPages}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )}
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                        className={
-                          currentPage === totalPages
-                            ? 'pointer-events-none opacity-50'
-                            : 'cursor-pointer'
-                        }
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Help Button */}
-      <Button
-        size="lg"
-        className="fixed bottom-6 right-6 rounded-full h-14 w-14 shadow-lg"
-      >
-        <CircleHelp className="h-6 w-6" />
-      </Button>
+        {/* Help Button */}
+        <Button
+          size="lg"
+          className="fixed bottom-6 right-6 rounded-full h-14 w-14 shadow-lg"
+        >
+          <CircleHelp className="h-6 w-6" />
+        </Button>
       </div>
     </>
   );
 };
 
-export default HousePlans;
+export default BuiltHomes;

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import Header from "@/components/Header";
 import heroHouse from "@/assets/hero-house.jpg";
 import houseMadison from "@/assets/house-madison.jpg";
 import houseOakwood from "@/assets/house-oakwood.jpg";
@@ -70,7 +71,9 @@ const HousePlanCard = ({
         
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <span className="text-2xl font-bold text-primary">${price}</span>
-          <Button>View Plan</Button>
+          <Link to="/house-plans">
+            <Button>View Plan</Button>
+          </Link>
         </div>
       </div>
     </Card>
@@ -206,43 +209,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Home className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-foreground">Cedric House Planning</span>
-          </div>
-          
-          <nav className="hidden md:flex items-center gap-8">
-            <Link to="/house-plans" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              House Plans
-            </Link>
-            <Link to="/styles" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Styles
-            </Link>
-            <Link to="/services" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Services
-            </Link>
-            <Link to="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              About
-            </Link>
-            <Link to="/contact" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-              Contact
-            </Link>
-          </nav>
-          
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Search className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <Button>Get Started</Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main>
         {/* HERO SECTION */}
@@ -298,14 +265,15 @@ const Index = () => {
               
               <div className="relative animate-scale-in">
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-hero">
-                  <img 
-                    src={heroHouse} 
-                    alt="Modern luxury house" 
-                    className="w-full h-auto object-cover"
-                  />
-                  <div className="absolute bottom-6 left-6 bg-card/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-border flex items-center gap-2">
-                    <Star className="h-5 w-5 text-star fill-star" />
-                    <span className="font-semibold text-foreground">4.9/5 Customer Rating</span>
+                  <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                    <iframe
+                      className="absolute top-0 left-0 w-full h-full rounded-3xl"
+                      src="https://www.youtube.com/embed/ciXvD_-rtts?si=vgL--Q5gRYliXpUZ&autoplay=1&mute=1&loop=1&playlist=ciXvD_-rtts"
+                      title="Cedric House Planning Trailer"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   </div>
                 </div>
               </div>
@@ -377,12 +345,16 @@ const Index = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
-                  Get Cost Estimate
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                  Browse All Plans
-                </Button>
+                <Link to="/get-quote">
+                  <Button size="lg" className="text-lg px-8 bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                    Get FREE Quote Now
+                  </Button>
+                </Link>
+                <Link to="/house-plans">
+                  <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+                    Browse All Plans
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
