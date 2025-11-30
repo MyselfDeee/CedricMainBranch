@@ -37,13 +37,26 @@ export function FilterSidebar({ onFilterChange, onClearAll }: FilterSidebarProps
       : [...selected, value];
     setter(newSelected);
     
-    // Notify parent of filter change
+    // Notify parent of filter change - use the appropriate new selected array
+    let updatedBedrooms = selectedBedrooms;
+    let updatedBathrooms = selectedBathrooms;
+    let updatedLevels = selectedLevels;
+    let updatedGarages = selectedGarages;
+    let updatedStyles = selectedStyles;
+
+    // Update the correct array based on which filter is being toggled
+    if (selected === selectedBedrooms) updatedBedrooms = newSelected;
+    if (selected === selectedBathrooms) updatedBathrooms = newSelected;
+    if (selected === selectedLevels) updatedLevels = newSelected;
+    if (selected === selectedGarages) updatedGarages = newSelected;
+    if (selected === selectedStyles) updatedStyles = newSelected;
+
     const updatedFilters: FilterState = {
-      bedrooms: selectedBedrooms,
-      bathrooms: selectedBathrooms,
-      levels: selectedLevels,
-      garage: selectedGarages,
-      styles: selectedStyles,
+      bedrooms: updatedBedrooms,
+      bathrooms: updatedBathrooms,
+      levels: updatedLevels,
+      garage: updatedGarages,
+      styles: updatedStyles,
       priceMin: priceMin ? parseInt(priceMin) : undefined,
       priceMax: priceMax ? parseInt(priceMax) : undefined,
       floorAreaMin: floorAreaMin ? parseInt(floorAreaMin) : undefined,

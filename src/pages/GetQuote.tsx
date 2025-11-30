@@ -14,6 +14,7 @@ const GetQuote = () => {
     phone: '',
     city: '',
     preferredStyle: '',
+    customStyle: '',
     bedrooms: '',
     bathrooms: '',
     otherRooms: '',
@@ -58,7 +59,7 @@ Phone: ${formData.phone}
 City: ${formData.city}
 
 *Design Preferences:*
-Style: ${formData.preferredStyle}
+Style: ${formData.preferredStyle === 'Other' ? formData.customStyle : formData.preferredStyle}
 Bedrooms: ${formData.bedrooms}
 Bathrooms: ${formData.bathrooms}
 Other Rooms: ${formData.otherRooms || 'None specified'}
@@ -92,6 +93,7 @@ Please contact me to discuss this quote.`;
         phone: '',
         city: '',
         preferredStyle: '',
+        customStyle: '',
         bedrooms: '',
         bathrooms: '',
         otherRooms: '',
@@ -110,12 +112,15 @@ Please contact me to discuss this quote.`;
     'Traditional',
     'Mediterranean',
     'Farmhouse',
+    'Tuscan',
+    'Tuscan Roof',
     'Minimalist',
     'Craftsman',
     'Colonial',
     'Ranch',
     'Victorian',
     'Not sure',
+    'Other',
   ];
 
   const budgetOptions = [
@@ -270,6 +275,19 @@ Please contact me to discuss this quote.`;
                             <option key={style} value={style}>{style}</option>
                           ))}
                         </select>
+                        {formData.preferredStyle === 'Other' && (
+                          <div className="mt-4">
+                            <label className="block text-sm font-medium text-foreground mb-2">Describe Your Style *</label>
+                            <Input
+                              type="text"
+                              name="customStyle"
+                              value={formData.customStyle}
+                              onChange={handleChange}
+                              placeholder="e.g., Blend of Modern and Tuscan with minimalist interiors"
+                              required
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-4">
@@ -320,7 +338,7 @@ Please contact me to discuss this quote.`;
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">Property Size (sqm) *</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">Stand/Yard Size (sqm) *</label>
                         <select
                           name="propertySize"
                           value={formData.propertySize}
@@ -397,7 +415,7 @@ Please contact me to discuss this quote.`;
 
                   {/* Submit Button */}
                   <div className="flex gap-4">
-                    <Button type="submit" size="lg" className="flex-1 flex items-center justify-center gap-2">
+                    <Button type="submit" size="lg" className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold">
                       <Send className="h-5 w-5" />
                       Send Quote Request to WhatsApp
                     </Button>

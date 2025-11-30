@@ -1,8 +1,24 @@
-import { Home, Search, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Home, Search, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const Header = () => {
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const getLinkClasses = (path: string) => {
+    const baseClasses = "text-sm font-medium transition-all duration-200 relative pb-2";
+    if (isActive(path)) {
+      return `${baseClasses} text-primary border-b-2 border-primary`;
+    }
+    return `${baseClasses} text-foreground hover:text-primary`;
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -12,33 +28,27 @@ const Header = () => {
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">
-          <Link to="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/" className={getLinkClasses("/")}>
             Home
           </Link>
-          <Link to="/house-plans" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/house-plans" className={getLinkClasses("/house-plans")}>
             House Plans
           </Link>
-          <Link to="/built-homes" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/built-homes" className={getLinkClasses("/built-homes")}>
             Built Homes
           </Link>
-          <Link to="/services" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/services" className={getLinkClasses("/services")}>
             Services
           </Link>
-          <Link to="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/about" className={getLinkClasses("/about")}>
             About
           </Link>
-          <Link to="/contact" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/contact" className={getLinkClasses("/contact")}>
             Contact
           </Link>
         </nav>
         
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Search className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="hidden sm:flex">
-            <Heart className="h-5 w-5" />
-          </Button>
           <Link to="/get-quote">
             <Button className="bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105">
               Get FREE Quote Now

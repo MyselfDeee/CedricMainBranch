@@ -30,4 +30,4 @@ export interface FilterState {
   floorAreaMax?: number;
 }
 
-export type SortOption = 'newest' | 'price-high' | 'price-low' | 'popular' | 'floor-area';
+export type SortOption = 'newest' | 'oldest' | 'price-high' | 'price-low' | 'popular';

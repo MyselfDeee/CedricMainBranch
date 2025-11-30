@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Grid3x3, List, CircleHelp, Heart, Home, Bed, Bath, Car } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Grid3x3, List, CircleHelp, Heart, Home, Bed, Bath, Car, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -32,6 +33,8 @@ function BuiltHomeCard({ plan }: { plan: HousePlan }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+    const [showPayment, setShowPayment] = useState(false);
 
   return (
     <>
@@ -104,11 +107,28 @@ function BuiltHomeCard({ plan }: { plan: HousePlan }) {
         />
 
         <div className="p-5">
-          <h3 className="text-lg font-semibold text-foreground mb-2">
-            {plan.title}
-          </h3>
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-foreground">
+                {plan.title}
+              </h3>
+            </div>
+            {plan.videoUrl && (
+              <Button 
+                size="sm"
+                onClick={() => setShowVideo(true)}
+                className="bg-red-400 hover:bg-red-500 text-white font-semibold shadow-md hover:shadow-lg transition-all whitespace-nowrap"
+              >
+                <svg className="w-4 h-4 mr-1 fill-current" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                HousePlan Video
+              </Button>
+            )}
+          </div>
+
           <p className="text-2xl font-bold text-primary mb-4">
-            ${plan.price.toLocaleString()}
+            R{plan.price.toLocaleString()}
           </p>
 
           <div className="space-y-2 mb-4">
@@ -140,21 +160,20 @@ function BuiltHomeCard({ plan }: { plan: HousePlan }) {
           </div>
 
           <div className="flex gap-3">
-            <Button className="flex-1" size="lg">
+            <Button 
+              className="flex-1" 
+              size="lg"
+              onClick={() => setShowDetails(true)}
+            >
               View Details
             </Button>
-            {plan.videoUrl && (
-              <Button 
-                size="lg"
-                onClick={() => setShowVideo(true)}
-                className="flex-1 bg-red-400 hover:bg-red-500 text-white font-semibold shadow-md hover:shadow-lg transition-all"
-              >
-                <svg className="w-4 h-4 mr-2 fill-current" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Watch Video
-              </Button>
-            )}
+            <Button 
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold" 
+              size="lg"
+              onClick={() => setShowPayment(true)}
+            >
+              Buy plan Online
+            </Button>
           </div>
         </div>
       </Card>
@@ -180,12 +199,248 @@ function BuiltHomeCard({ plan }: { plan: HousePlan }) {
           </div>
           <button
             onClick={() => setShowVideo(false)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50"
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
           >
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+        </div>
+      )}
+
+      {showDetails && (
+        <div 
+          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowDetails(false)}
+        >
+          <div 
+            className="bg-white rounded-lg overflow-hidden max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <div className="sticky top-0 flex items-center justify-between p-6 bg-gradient-to-r from-green-600 to-green-700 text-white">
+              <h2 className="text-2xl font-bold">{plan.title}</h2>
+              <button
+                onClick={() => setShowDetails(false)}
+                className="text-white hover:text-gray-200 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Featured Image */}
+              <div className="rounded-lg overflow-hidden bg-gray-200">
+                <img
+                  src={plan.images[0]}
+                  alt={plan.title}
+                  className="w-full h-64 object-cover"
+                />
+              </div>
+
+              {/* Price */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground mb-2">Property Value</p>
+                <p className="text-4xl font-bold text-green-600">R{plan.price.toLocaleString()}</p>
+              </div>
+
+              {/* Key Features */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bed className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold">Bedrooms</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">{plan.bedrooms}</p>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bath className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold">Bathrooms</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">{plan.bathrooms}</p>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Car className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold">Garage</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">{plan.garage}</p>
+                </div>
+                <div className="bg-orange-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Home className="w-5 h-5 text-green-600" />
+                    <span className="font-semibold">Levels</span>
+                  </div>
+                  <p className="text-2xl font-bold text-green-600">{plan.levels}</p>
+                </div>
+              </div>
+
+              {/* Specifications */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-4">Specifications</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Floor Area</p>
+                    <p className="text-lg font-semibold">{plan.floorArea} m²</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Dimensions</p>
+                    <p className="text-lg font-semibold">{plan.width}m × {plan.depth}m</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {plan.description && (
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-2">Description</h3>
+                  <p className="text-muted-foreground">{plan.description}</p>
+                </div>
+              )}
+
+              {/* Features */}
+              {plan.features && plan.features.length > 0 && (
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Features</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {plan.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-600" />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="border-t pt-6 flex gap-3">
+                <Button className="flex-1 bg-green-600 hover:bg-green-700" size="lg">
+                  Inquire Now
+                </Button>
+                <Button 
+                  className="flex-1 bg-green-600 hover:bg-green-700" 
+                  size="lg"
+                  onClick={() => {
+                    setShowDetails(false);
+                    setShowPayment(true);
+                  }}
+                >
+                  Buy Online
+                </Button>
+                <Button variant="outline" className="flex-1" size="lg" onClick={() => setShowDetails(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Modal */}
+      {showPayment && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-2xl font-bold">Complete Purchase</h2>
+              <button
+                onClick={() => setShowPayment(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Plan Summary */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-2">{plan.title}</h3>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Price:</span>
+                  <span className="text-2xl font-bold text-green-600">R {plan.price.toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Payment Form */}
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="John Doe"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="john@example.com"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Card Number</label>
+                  <input
+                    type="text"
+                    placeholder="1234 5678 9012 3456"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Expiry Date</label>
+                    <input
+                      type="text"
+                      placeholder="MM/YY"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">CVV</label>
+                    <input
+                      type="text"
+                      placeholder="123"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                </div>
+              </form>
+
+              {/* Security Message */}
+              <div className="bg-green-50 border border-green-200 p-3 rounded-lg text-sm text-green-700">
+                🔒 Your payment information is secure and encrypted.
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  className="flex-1 bg-green-600 hover:bg-green-700" 
+                  size="lg"
+                  onClick={() => setShowPayment(false)}
+                >
+                  Complete Purchase
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex-1" 
+                  size="lg"
+                  onClick={() => setShowPayment(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
@@ -195,10 +450,23 @@ function BuiltHomeCard({ plan }: { plan: HousePlan }) {
 // Main BuiltHomes Page Component
 export const BuiltHomes = () => {
   const [filters, setFilters] = useState<FilterState>({});
-  const [sortBy, setSortBy] = useState<SortOption>('floor-area');
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchQuery, setSearchQuery] = useState('');
   const itemsPerPage = 6;
+
+  // Listen for search events from header
+  useEffect(() => {
+    const handleSearch = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      setSearchQuery(customEvent.detail.query);
+      setCurrentPage(1); // Reset to first page
+    };
+
+    window.addEventListener('planSearch', handleSearch);
+    return () => window.removeEventListener('planSearch', handleSearch);
+  }, []);
 
   // Filter and sort built homes
   const filteredAndSortedPlans = useMemo(() => {
@@ -222,7 +490,12 @@ export const BuiltHomes = () => {
       );
     }
     if (filters.levels && filters.levels.length > 0) {
-      filtered = filtered.filter((plan) => filters.levels!.includes(plan.levels));
+      filtered = filtered.filter((plan) => {
+        return filters.levels!.some((level) => {
+          if (level === 4) return plan.levels >= 3; // 3+ means 3 or more
+          return plan.levels === level;
+        });
+      });
     }
     if (filters.floorAreaMin) {
       filtered = filtered.filter((plan) => plan.floorArea >= filters.floorAreaMin!);
@@ -241,10 +514,20 @@ export const BuiltHomes = () => {
       );
     }
 
+    // Apply search query
+    if (searchQuery.trim()) {
+      filtered = filtered.filter((plan) =>
+        plan.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
     // Sort
     switch (sortBy) {
       case 'newest':
         filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+        break;
+      case 'oldest':
+        filtered.sort((a, b) => (a.isNew ? 1 : 0) - (b.isNew ? 1 : 0));
         break;
       case 'price-high':
         filtered.sort((a, b) => b.price - a.price);
@@ -255,13 +538,10 @@ export const BuiltHomes = () => {
       case 'popular':
         filtered.sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0));
         break;
-      case 'floor-area':
-        filtered.sort((a, b) => b.floorArea - a.floorArea);
-        break;
     }
 
     return filtered;
-  }, [filters, sortBy]);
+  }, [filters, sortBy, searchQuery]);
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedPlans.length / itemsPerPage);
@@ -288,28 +568,60 @@ export const BuiltHomes = () => {
             {/* Header */}
             <div className="border-b bg-background sticky top-0 z-10">
               <div className="px-8 py-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h1 className="text-3xl font-bold text-foreground">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <h1 className="text-3xl font-bold text-foreground whitespace-nowrap">
                     Built Homes Showcase
                   </h1>
-                  <div className="flex items-center gap-3">
-                    {/* Sort Dropdown */}
-                    <Select
-                      value={sortBy}
-                      onValueChange={(value) => setSortBy(value as SortOption)}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="floor-area">Floor Area</SelectItem>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price-high">Price High → Low</SelectItem>
-                        <SelectItem value="price-low">Price Low → High</SelectItem>
-                        <SelectItem value="popular">Most Popular</SelectItem>
-                      </SelectContent>
-                    </Select>
 
+                  {/* Search Bar */}
+                  <div className="flex items-center gap-2 flex-1 max-w-sm">
+                    <Search className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    <Input
+                      type="text"
+                      placeholder="Search by plan name..."
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          window.dispatchEvent(
+                            new CustomEvent("planSearch", { detail: { query: searchQuery } })
+                          );
+                        }
+                      }}
+                      className="h-9"
+                    />
+                    {searchQuery && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSearchQuery("")}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                  {/* Sort Dropdown */}
+                  <Select
+                    value={sortBy}
+                    onValueChange={(value) => setSortBy(value as SortOption)}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="newest">Newest</SelectItem>
+                      <SelectItem value="oldest">Oldest</SelectItem>
+                      <SelectItem value="price-high">Price High → Low</SelectItem>
+                      <SelectItem value="price-low">Price Low → High</SelectItem>
+                      <SelectItem value="popular">Most Popular</SelectItem>
+                    </SelectContent>
+                  </Select>
                     {/* View Toggle */}
                     <div className="flex gap-1 border rounded-md p-1">
                       <Button
@@ -331,10 +643,11 @@ export const BuiltHomes = () => {
                     </div>
                   </div>
                 </div>
-                <p className="text-muted-foreground">
-                  Showing {filteredAndSortedPlans.length} results
-                </p>
               </div>
+              
+              <p className="text-muted-foreground">
+                Showing {filteredAndSortedPlans.length} results
+              </p>
             </div>
 
             {/* Built Homes Grid */}

@@ -1,10 +1,11 @@
 import { Home, Search, Heart, Bed, Bath, Square, Star, Facebook, Twitter, Instagram } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useState } from "react";
 import Header from "@/components/Header";
 import heroHouse from "@/assets/hero-house.jpg";
 import houseMadison from "@/assets/house-madison.jpg";
@@ -70,7 +71,7 @@ const HousePlanCard = ({
         </div>
         
         <div className="flex items-center justify-between pt-4 border-t border-border">
-          <span className="text-2xl font-bold text-primary">${price}</span>
+          <span className="text-2xl font-bold text-primary">R {price}</span>
           <Link to="/house-plans">
             <Button>View Plan</Button>
           </Link>
@@ -114,6 +115,25 @@ const TestimonialCard = ({ name, role, content, rating, initials }: {
 };
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+
+  const handleSearch = (query?: string) => {
+    const searchTerm = query || searchQuery;
+    if (searchTerm.trim()) {
+      window.dispatchEvent(
+        new CustomEvent("planSearch", { detail: { query: searchTerm } })
+      );
+      navigate("/house-plans");
+    }
+  };
+
+  const handleBadgeClick = (badgeText: string) => {
+    setSelectedFilter(badgeText);
+    handleSearch(badgeText);
+  };
+
   // Popular Plans Data
   const popularPlans = [
     {
@@ -235,28 +255,59 @@ const Index = () => {
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                       <Input 
                         placeholder="Find your perfect house plan..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSearch();
+                          }
+                        }}
                         className="pl-10 h-12 text-base"
                       />
                     </div>
-                    <Button size="lg" className="px-8">
+                    <Button 
+                      size="lg" 
+                      className="px-8"
+                      onClick={() => handleSearch()}
+                    >
                       Search
                     </Button>
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                      onClick={() => handleBadgeClick("Modern")}
+                    >
                       Modern
                     </Badge>
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                      onClick={() => handleBadgeClick("3 Bedroom")}
+                    >
                       3 Bedroom
                     </Badge>
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                      onClick={() => handleBadgeClick("Double Storey")}
+                    >
                       Double Storey
                     </Badge>
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                      onClick={() => handleBadgeClick("Luxury")}
+                    >
                       Luxury
                     </Badge>
-                    <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 transition-colors">
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-secondary/80 transition-colors"
+                      onClick={() => handleBadgeClick("Affordable")}
+                    >
                       Affordable
                     </Badge>
                   </div>
